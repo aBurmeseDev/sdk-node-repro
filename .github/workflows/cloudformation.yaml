@@ -1,0 +1,57 @@
+name: Create CloudFormation Stack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  create-stack:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x] # test with different node versions
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm install @aws-sdk/client-cloudformation
+
+    - name: Create CloudFormation Stack
+      run: |
+        const { CloudFormationClient, CreateStackCommand } = require("@aws-sdk/client-cloudformation");
+        const client = new CloudFormationClient({ region: "us-west-2" });
+
+        const params = {
+          StackName: "my-stack",
+          TemplateBody: JSON.stringify({
+            Resources: {
+              MyBucket: {
+                Type: "AWS::S3::Bucket",
+                Properties: {
+                  BucketName: "my-unique-bucket-name",
+                },
+              },
+            },
+          }),
+        };
+
+        const command = new CreateStackCommand(params);
+        const response = await client.send(command);
+        console.log(response);
+      env:
+        NODE_OPTIONS: '--experimental-vm-modules'
