@@ -28,12 +28,6 @@ jobs:
 
     - name: Print npm version
       run: npm --version
-
-    - name: Print Serverless version (if installed)
-      run: |
-        npm install -g serverless
-        serverless --version
-      continue-on-error: true
       
     - name: Print AWS SDK version
       run: |
@@ -55,11 +49,6 @@ jobs:
     - name: Create CloudFormation Stack
       run: |
         npm install @aws-sdk/client-cloudformation
-        NODE_VERSION="${{ matrix.node-version }}"
-        STACK_NAME="my-stack-node-$(echo "$NODE_VERSION" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/^-//' | sed 's/-$//')"
-        aws cloudformation create-stack \
-          --stack-name "$STACK_NAME" \
-          --template-body '{"Resources": {"MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "sdk-node-repro"}}}}' \
-          --capabilities CAPABILITY_NAMED_IAM
+        node --loader=esm create-stack.mjs
       env:
         AWS_REGION: us-west-2
