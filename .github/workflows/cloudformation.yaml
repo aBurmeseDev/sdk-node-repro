@@ -31,27 +31,29 @@ jobs:
     - name: Install dependencies
       run: npm install @aws-sdk/client-cloudformation
 
-    - name: Create CloudFormation Stack
-      run: |
-        const { CloudFormationClient, CreateStackCommand } = require("@aws-sdk/client-cloudformation");
-        const client = new CloudFormationClient({ region: "us-west-2" });
+  - name: Create CloudFormation Stack
+  run: |
+    node -e '
+      const { CloudFormationClient, CreateStackCommand } = require("@aws-sdk/client-cloudformation");
+      const client = new CloudFormationClient({ region: "us-west-2" });
 
-        const params = {
-          StackName: "my-stack",
-          TemplateBody: JSON.stringify({
-            Resources: {
-              MyBucket: {
-                Type: "AWS::S3::Bucket",
-                Properties: {
-                  BucketName: "my-unique-bucket-name",
-                },
+      const params = {
+        StackName: "my-stack",
+        TemplateBody: JSON.stringify({
+          Resources: {
+            MyBucket: {
+              Type: "AWS::S3::Bucket",
+              Properties: {
+                BucketName: "my-unique-bucket-name",
               },
             },
-          }),
-        };
+          },
+        }),
+      };
 
-        const command = new CreateStackCommand(params);
-        const response = await client.send(command);
-        console.log(response);
-      env:
-        NODE_OPTIONS: '--experimental-vm-modules'
+      const command = new CreateStackCommand(params);
+      const response = await client.send(command);
+      console.log(response);
+    '
+  env:
+    NODE_OPTIONS: '--experimental-vm-modules'
