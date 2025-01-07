@@ -49,13 +49,24 @@ jobs:
     - name: Create CloudFormation Stack
       run: |
         npm install @aws-sdk/client-cloudformation
-        node -e '
+        node --loader=esm -e '
           import { CloudFormationClient, CreateStackCommand } from "@aws-sdk/client-cloudformation";
 
           const client = new CloudFormationClient({ region: process.env.AWS_REGION });
 
           const params = {
-            StackName: `my-stack-node-${process.version.replace(/\./g, "-")}`
+            StackName: `my-stack-node-${process.version.replace(/\./g, "-")}`,
+            TemplateBody: JSON.stringify({
+              Resources: {
+                MyBucket: {
+                  Type: "AWS::S3::Bucket",
+                  Properties: {
+                    BucketName: "sdk-node-repro"
+                  }
+                }
+              }
+            }),
+            Capabilities: ["CAPABILITY_NAMED_IAM"]
           };
 
           const command = new CreateStackCommand(params);
