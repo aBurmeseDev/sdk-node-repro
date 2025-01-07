@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x] 
+        node-version: 16.x 
 
     steps:
     - name: Configure AWS credentials
@@ -29,7 +29,7 @@ jobs:
         npm install @aws-sdk/client-cloudformation
         aws cloudformation create-stack \
           --stack-name my-stack-${{ matrix.node-version }} \
-          --template-body file://cloudformation.json \
+          --template-body '{"Resources": {"MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "sdk-node-repro"}}}}' \
           --capabilities CAPABILITY_NAMED_IAM
       env:
         AWS_REGION: us-west-2
