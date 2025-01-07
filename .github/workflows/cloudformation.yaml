@@ -34,6 +34,11 @@ jobs:
         npm install -g serverless
         serverless --version
       continue-on-error: true
+      
+    - name: Print AWS SDK version
+      run: |
+        npm install @aws-sdk/client-cloudformation
+        node -e 'console.log(require("@aws-sdk/client-cloudformation/package.json").version)'
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
