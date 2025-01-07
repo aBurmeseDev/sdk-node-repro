@@ -49,6 +49,6 @@ jobs:
     - name: Create CloudFormation Stack
       run: |
         npm install @aws-sdk/client-cloudformation
-        node --loader=es6 create-stack.mjs
+        node --loader=esm create-stack.mjs
       env:
         AWS_REGION: us-west-2
