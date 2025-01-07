@@ -1,7 +1,7 @@
 name: Create CloudFormation Stack
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
 
@@ -9,9 +9,32 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x] 
+        node-version: ['>=16.11.0', '<16.11.0']
 
     steps:
+    - name: Print version details
+      run: |
+        echo "Ubuntu version:"
+        lsb_release -a
+        echo "-----------------"
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Print Node.js version
+      run: node --version
+
+    - name: Print npm version
+      run: npm --version
+
+    - name: Print Serverless version (if installed)
+      run: |
+        npm install -g serverless
+        serverless --version
+      continue-on-error: true
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
