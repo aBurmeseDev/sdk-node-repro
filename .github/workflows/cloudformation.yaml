@@ -26,7 +26,7 @@ jobs:
 
     - name: Create CloudFormation Stack
       run: |
-        node -e '
+        node --loader=esm -e '
           const { CloudFormationClient, CreateStackCommand } = require("@aws-sdk/client-cloudformation");
           const client = new CloudFormationClient({ region: "us-west-2" });
 
@@ -37,7 +37,7 @@ jobs:
                 MyBucket: {
                   Type: "AWS::S3::Bucket",
                   Properties: {
-                    BucketName: "my-unique-bucket-name",
+                    BucketName: "sdk-node-repro",
                   },
                 },
               },
