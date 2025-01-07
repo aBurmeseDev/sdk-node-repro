@@ -26,7 +26,7 @@ jobs:
 
     - name: Create CloudFormation Stack
       run: |
-        npm install -g aws-sdk
+        npm install @aws-sdk/client-cloudformation
         aws cloudformation create-stack \
           --stack-name my-stack-${{ matrix.node-version }} \
           --template-body file://cloudformation.json \
