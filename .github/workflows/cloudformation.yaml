@@ -28,7 +28,7 @@ jobs:
       run: |
         npm install @aws-sdk/client-cloudformation
         aws cloudformation create-stack \
-          --stack-name my-stack-node-${{ matrix.node-version }} \
+          --stack-name my-stack-node \
           --template-body '{"Resources": {"MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "sdk-node-repro"}}}}' \
           --capabilities CAPABILITY_NAMED_IAM
       env:
