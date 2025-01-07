@@ -3,18 +3,7 @@ import { CloudFormationClient, CreateStackCommand } from '@aws-sdk/client-cloudf
 const client = new CloudFormationClient({ region: process.env.AWS_REGION });
 
 const params = {
-  StackName: `my-stack-node-${process.version.replace(/\./g, '-')}`,
-  TemplateBody: JSON.stringify({
-    Resources: {
-      MyBucket: {
-        Type: 'AWS::S3::Bucket',
-        Properties: {
-          BucketName: 'sdk-node-repro'
-        }
-      }
-    }
-  }),
-  Capabilities: ['CAPABILITY_NAMED_IAM']
+  StackName: `my-stack-node-${process.version.replace(/\./g, '-')}`
 };
 
 const command = new CreateStackCommand(params);
