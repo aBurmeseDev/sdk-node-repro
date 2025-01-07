@@ -48,7 +48,19 @@ jobs:
 
     - name: Create CloudFormation Stack
       run: |
-        npm install -g @aws-sdk/client-cloudformation
-        node create-stack.js
+        npm install @aws-sdk/client-cloudformation
+        node -e '
+          import { CloudFormationClient, CreateStackCommand } from "@aws-sdk/client-cloudformation";
+
+          const client = new CloudFormationClient({ region: process.env.AWS_REGION });
+
+          const params = {
+            StackName: `my-stack-node-${process.version.replace(/\./g, "-")}`
+          };
+
+          const command = new CreateStackCommand(params);
+          const response = await client.send(command);
+          console.log(response);
+        '
       env:
         AWS_REGION: us-west-2
