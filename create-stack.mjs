@@ -1,3 +1,6 @@
+import esm from 'esm';
+esm(module);
+
 import { CloudFormationClient, CreateStackCommand } from '@aws-sdk/client-cloudformation';
 
 const client = new CloudFormationClient({ region: process.env.AWS_REGION });

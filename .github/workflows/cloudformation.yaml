@@ -23,6 +23,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Install dependencies
+      run: npm install esm        
+
     - name: Print Node.js version
       run: node --version
 
@@ -49,6 +52,6 @@ jobs:
     - name: Create CloudFormation Stack
       run: |
         npm install @aws-sdk/client-cloudformation
-        node --loader=esm create-stack.mjs
+        node -r esm create-stack.mjs
       env:
         AWS_REGION: us-west-2
