@@ -1,19 +1,17 @@
 name: Create CloudFormation Stack
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_dispatch: 
 
 jobs:
 
   create-stack:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x] 
 
     steps:
-    - uses: actions/checkout@v3
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -21,32 +19,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
 
-    - name: Install dependencies
-      run: npm install @aws-sdk/client-cloudformation
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Create CloudFormation Stack
       run: |
-        node --loader=esm -e '
-          const { CloudFormationClient, CreateStackCommand } = require("@aws-sdk/client-cloudformation");
-          const client = new CloudFormationClient({ region: "us-west-2" });
-
-          const params = {
-            StackName: "my-stack",
-            TemplateBody: JSON.stringify({
-              Resources: {
-                MyBucket: {
-                  Type: "AWS::S3::Bucket",
-                  Properties: {
-                    BucketName: "sdk-node-repro",
-                  },
-                },
-              },
-            }),
-          };
-
-          const command = new CreateStackCommand(params);
-          const response = await client.send(command);
-          console.log(response);
-        '
+        npm install -g aws-sdk
+        aws cloudformation create-stack \
+          --stack-name my-stack-${{ matrix.node-version }} \
+          --template-body file://cloudformation.json \
+          --capabilities CAPABILITY_NAMED_IAM
       env:
-        NODE_OPTIONS: '--experimental-vm-modules'
+        AWS_REGION: us-west-2
