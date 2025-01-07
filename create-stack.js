@@ -1,4 +1,4 @@
-import { CloudFormationClient, CreateStackCommand } from '@aws-sdk/client-cloudformation';
+import { CloudFormationClient, CreateStackCommand } from '@aws-sdk/client-cloudformation/module.mjs';
 
 const client = new CloudFormationClient({ region: process.env.AWS_REGION });
 
