@@ -49,6 +49,10 @@ jobs:
     - name: Create CloudFormation Stack
       run: |
         npm install @aws-sdk/client-cloudformation
-        node create-stack.js
+        node -e 'require("@aws-sdk/client-cloudformation")'
+        aws cloudformation create-stack \
+          --stack-name my-stack-node-${{ matrix.node-version | replace('\.', '-') }} \
+          --template-body '{"Resources": {"MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "sdk-node-repro"}}}}' \
+          --capabilities CAPABILITY_NAMED_IAM
       env:
         AWS_REGION: us-west-2
