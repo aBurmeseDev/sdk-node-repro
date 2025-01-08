@@ -48,7 +48,7 @@ jobs:
 
     - name: Create CloudFormation Stack
       run: |
-        npm install @aws-sdk/client-cloudformation@latest
+        npm install @aws-sdk/client-cloudformation@3.724.0
         node -e 'require("@aws-sdk/client-cloudformation")'
         NODE_VERSION="${{ matrix.node-version }}"
         STACK_NAME="my-stack-node-$(echo "$NODE_VERSION" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/^-//' | sed 's/-$//')"
