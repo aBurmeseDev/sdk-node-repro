@@ -18,6 +18,5 @@ const params = {
 };
 
 const command = new CreateStackCommand(params);
-client.send(command)
-  .then(response => console.log(response))
-  .catch(error => console.error(error));
+const response = await client.send(command);
+console.log(response);
