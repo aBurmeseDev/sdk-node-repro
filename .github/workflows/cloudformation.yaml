@@ -50,8 +50,10 @@ jobs:
       run: |
         npm install @aws-sdk/client-cloudformation
         node -e 'require("@aws-sdk/client-cloudformation")'
+        NODE_VERSION="${{ matrix.node-version }}"
+        STACK_NAME="my-stack-node-$(echo "$NODE_VERSION" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/^-//' | sed 's/-$//')"
         aws cloudformation create-stack \
-          --stack-name my-stack-node-${{ matrix.node-version | replace('\.', '-') }} \
+          --stack-name "$STACK_NAME" \
           --template-body '{"Resources": {"MyBucket": {"Type": "AWS::S3::Bucket", "Properties": {"BucketName": "sdk-node-repro"}}}}' \
           --capabilities CAPABILITY_NAMED_IAM
       env:
