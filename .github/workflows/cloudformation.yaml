@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['>=16.11.0', '18.20.5', '20.18.1', '22.13.0']
+        node-version: ['>=16.11.0', '18.20.5', '20.18.1', '<16.11.0']
 
     steps:
     - name: Print version details
@@ -48,7 +48,7 @@ jobs:
 
     - name: Create CloudFormation Stack
       run: |
-        npm install @aws-sdk/client-cloudformation
+        npm install @aws-sdk/client-cloudformation@latest
         node -e 'require("@aws-sdk/client-cloudformation")'
         NODE_VERSION="${{ matrix.node-version }}"
         STACK_NAME="my-stack-node-$(echo "$NODE_VERSION" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/^-//' | sed 's/-$//')"
